@@ -98,36 +98,16 @@ ol, ul{
     text-align: center;
 }
 
-#left-col {
-	float: left;
-	width: 60%;
-}
-
-#search-history {
-	float: left;
-	width: 40%;
-}
-
 #container {
 	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 	margin: 0 3%;
-	justify-content: space-between;
 	text-align: center;
 }
 
-#filter-type {
-	display: flex;
-	flex-basis: 30%;
-}
-
-#filter-region {
-	display: flex;
-	flex-basis: 30%;
-}
-
-#search-name {
-	display: flex;
-	flex-basis: 30%;
+.filter {
+	flex: 30%
 }
 
 /* .picture {                

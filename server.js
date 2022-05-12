@@ -11,7 +11,7 @@ app.use(bodyparser.urlencoded({
   }));
 
   app.set('view engine', 'ejs');
-  app.use(express.static('./public'));     
+  app.use(express.static(__dirname + '/public'));     
   
   app.listen(process.env.PORT || 5000, function (err) {     // anonymous function as the second parameter
       if(err) console.log(err);

@@ -7,7 +7,7 @@ function createSingleTypePokemon(data_t) {
     let pokemonID = data_t.id;
     let singlePokemonCard = 
     ` ${pokemonName}<div class="picture"> 
-<a href="https://agile-fortress-53593.herokuapp.com/profile/${pokemonID}">
+<a href="http://localhost:5000/profile/${pokemonID}">
 <img src="${data_t.sprites.other["official-artwork"].front_default}">
 </a> </div>`; 
     $("#left-col").append(singlePokemonCard);
@@ -43,7 +43,7 @@ function createSingleRegionPokemon(data_r) {
     let singleRegionPokemonName = data_r.name;
     let singlePokemonCard = 
     ` ${singleRegionPokemonName}<div class="picture"> 
-<a href="https://agile-fortress-53593.herokuapp.com/profile/${pokemonID}">
+<a href="http://localhost:5000/profile/${pokemonID}">
 <img src="${data_r.sprites.other["official-artwork"].front_default}">
 </a> </div>`; 
     $("#left-col").append(singlePokemonCard);
@@ -79,13 +79,13 @@ function displaySearchResultAndHistory(data_n) {
     let pokemonID = data_n.id;
     let singlePokemonCard = 
     ` ${nameInput}<div class="picture"> 
-    <a href="https://agile-fortress-53593.herokuapp.com/profile/${pokemonID}">
+    <a href="http://localhost:5000/profile/${pokemonID}">
     <img src="${data_n.sprites.other["official-artwork"].front_default}">
     </a> </div>`; 
     $("#left-col").append(singlePokemonCard);
     $("#search-items").append(
         "<span class='search-item'>" +
-          `<a href= "https://agile-fortress-53593.herokuapp.com/profile/${pokemonID}">${nameInput}</a>` +
+          `<a href= "http://localhost:5000/profile/${pokemonID}">${nameInput}</a>` +
           '<input class="hide" type="button" value="Remove">' +
           "</span>" +
           "<br>"

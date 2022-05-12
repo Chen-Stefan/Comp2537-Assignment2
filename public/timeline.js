@@ -1,4 +1,4 @@
-function loadTypeTimelines() {
+function loadAllTimelines() {
   // it's not a type POST, so in the ajax object do not need a "Data" property
   $.ajax({
     type: "GET",
@@ -31,7 +31,7 @@ function clearTimeline() {
 }
 
 function setup() {
-  loadAllTypelines();
+  loadAllTimelines();
   $("body").on("click", ".hide", hide_);
   $("body").on("click", "#clear-btn", clearTimeline);
 }
