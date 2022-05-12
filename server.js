@@ -2,9 +2,29 @@ const express = require("express");
 const res = require("express/lib/response");
 const app = express();      
 const https = require('https');       
+const mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost:27017/timelineDB",
+ {useNewUrlParser: true, useUnifiedTopology: true});
+const timelineSchema = new mongoose.Schema({
+    text: String,
+    hits: Number,
+    time: String
+});                                 // 这里需要match collection的2名字
+const timelineModel = mongoose.model("timelines", timelineSchema);
+
+app.get('/timeline/getAllEvents', function(req, res) {
+    timelineModel.find({}, function(err, timelineData){
+        if (err){
+          console.log("Error " + err);
+        }else{
+          console.log("Data " + timelineData);
+        }
+        res.send(timelineData);
+    });
+  })
 
 app.set('view engine', 'ejs');
-
 app.use(express.static('./public'));     
 
 app.listen(process.env.PORT || 5000, function (err) {     // anonymous function as the second parameter
