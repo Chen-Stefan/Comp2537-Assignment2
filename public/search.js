@@ -112,11 +112,25 @@ function clearHistory() {
     $("#search-items").empty();
 }
 
+function addNewTimelineEvent(pokemonType) {
+    $.ajax({
+        type: "PUT",
+        url: "http://localhost:5000/timeline/insert",
+        data: {
+            text: `User has searched for ${pokemonType}`,
+            hits: 1,
+            time: "at time Y"
+        },
+        success: (res) => {console.log(res)}
+    })
+}
+
 function setup() {
     displaySpecificType($("#pokemon-type option:selected").val());
     $("#pokemon-type").change(() => {
         pokemonType = $("#pokemon-type option:selected").val();
         displaySpecificType(pokemonType);
+        addNewTimelineEvent(pokemonType);
     })
     displaySpecificRegion($("#pokemon-region option:selected").val());
     $("#pokemon-region").change(() => {

@@ -17,12 +17,6 @@ app.use(bodyparser.urlencoded({
       if(err) console.log(err);
   })
   
-  // res.send()一般用一次， res.write()会把string concatenate, 可以连用好多个
-  
-  // app.get('/profile/:id', function (req, res){      
-  //     res.send(`Hi there, the pokemon has the id ${req.params.id}`) 
-  // })
-  
 mongoose.connect("mongodb://localhost:27017/timelineDB",
  {useNewUrlParser: true, useUnifiedTopology: true});
 const timelineSchema = new mongoose.Schema({
@@ -146,6 +140,8 @@ app.get('/profile/:id', function (req, res) {
         })
     })              
 })
+
+// res.send()一般用一次， res.write()会把string concatenate, 可以连用好多个
 
 // sendFile 和res.render一样也可以send整个page to client, 但是sendFile只能send一个static page
 // app.get('/', function(req, res){
