@@ -1,9 +1,28 @@
 const express = require("express");
 const res = require("express/lib/response");
 const app = express();      
+const bodyparser = require("body-parser");
 const https = require('https');       
 const mongoose = require('mongoose');
 
+
+app.use(bodyparser.urlencoded({
+    extended: true
+  }));
+
+  app.set('view engine', 'ejs');
+  app.use(express.static('./public'));     
+  
+  app.listen(process.env.PORT || 5000, function (err) {     // anonymous function as the second parameter
+      if(err) console.log(err);
+  })
+  
+  // res.send()一般用一次， res.write()会把string concatenate, 可以连用好多个
+  
+  // app.get('/profile/:id', function (req, res){      
+  //     res.send(`Hi there, the pokemon has the id ${req.params.id}`) 
+  // })
+  
 mongoose.connect("mongodb://localhost:27017/timelineDB",
  {useNewUrlParser: true, useUnifiedTopology: true});
 const timelineSchema = new mongoose.Schema({
@@ -23,20 +42,50 @@ app.get('/timeline/getAllEvents', function(req, res) {
         res.send(timelineData);
     });
   })
+// add JSON objects(instances) to the collection in mongo database
+// for html forms use post request, for others use put
+app.put('/timeline/insert', function(req, res) {
+    timelineModel.create({
+        'text': req.body.text,
+        'hits': req.body.hits,
+        'time': req.body.time
+    }, function(err, timelineData){
+        if (err){
+          console.log("Error " + err);
+        }else{
+          console.log("Data " + timelineData);
+        }
+        res.send(timelineData);
+    });
+  })
 
-app.set('view engine', 'ejs');
-app.use(express.static('./public'));     
+app.get('/timeline/delete/:id', function(req, res) {
+    timelineModel.remove({
+        '_id': req.params.id
+    }, function(err, timelineData){
+        if (err){
+          console.log("Error " + err);
+        }else{
+          console.log("Data " + timelineData);
+        }
+        res.send(`Timeline Data of ID ${req.params.id} deleted!`);
+    });
+  })
 
-app.listen(process.env.PORT || 5000, function (err) {     // anonymous function as the second parameter
-    if(err) console.log(err);
-})
-
-// url里的内容属于request
-// res.send()一般用一次， res.write()会把string concatenate, 可以连用好多个
-
-// app.get('/profile/:id', function (req, res){      
-//     res.send(`Hi there, the pokemon has the id ${req.params.id}`) 
-// })
+app.get('/timeline/incrementHits/:id', function(req, res) {
+    timelineModel.updateOne({
+        '_id': req.params.id
+    }, {
+        $inc: {'hits': 1}
+    }, function(err, timelineData) {
+        if (err){
+          console.log("Error " + err);
+        }else{
+          console.log("Data " + timelineData);
+        }
+        res.send(`Increment hit of ID ${req.params.id} by 1!`);
+    });
+  })
 
 app.get('/profile/:id', function (req, res) {   
     const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`;
