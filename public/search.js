@@ -102,6 +102,8 @@ async function searchPokemonByName() {
         url: `https://pokeapi.co/api/v2/pokemon/${nameInput}`,
         success: displaySearchResultAndHistory
     });
+
+    addNewNameTimelineEvent(nameInput);
 }
 
 function hide_() {
@@ -112,12 +114,38 @@ function clearHistory() {
     $("#search-items").empty();
 }
 
-function addNewTimelineEvent(pokemonType) {
+function addNewTypeTimelineEvent(pokemonType) {
     $.ajax({
         type: "PUT",
         url: "http://localhost:5000/timeline/insert",
         data: {
-            text: `User has searched for ${pokemonType}`,
+            text: `User searched for pokemon type: ${pokemonType}`,
+            hits: 1,
+            time: "at time Y"
+        },
+        success: (res) => {console.log(res)}
+    })
+}
+
+function addNewRegionTimelineEvent(currentRegion) {
+    $.ajax({
+        type: "PUT",
+        url: "http://localhost:5000/timeline/insert",
+        data: {
+            text: `User searched for pokemon region: ${currentRegion}`,
+            hits: 1,
+            time: "at time Y"
+        },
+        success: (res) => {console.log(res)}
+    })
+}
+
+function addNewNameTimelineEvent(nameInput) {
+    $.ajax({
+        type: "PUT",
+        url: "http://localhost:5000/timeline/insert",
+        data: {
+            text: `User searched for pokemon name: ${nameInput}`,
             hits: 1,
             time: "at time Y"
         },
@@ -127,16 +155,21 @@ function addNewTimelineEvent(pokemonType) {
 
 function setup() {
     displaySpecificType($("#pokemon-type option:selected").val());
+
     $("#pokemon-type").change(() => {
         pokemonType = $("#pokemon-type option:selected").val();
         displaySpecificType(pokemonType);
-        addNewTimelineEvent(pokemonType);
+        addNewTypeTimelineEvent(pokemonType);
     })
+
     displaySpecificRegion($("#pokemon-region option:selected").val());
+    
     $("#pokemon-region").change(() => {
         pokemonRegion = $("#pokemon-region option:selected").val();
         displaySpecificRegion(pokemonRegion);
+        addNewRegionTimelineEvent(currentRegion);
     })
+
     $("#search-btn").click(searchPokemonByName);
     $("body").on("click", ".hide", hide_);
     $("body").on("click", "#clear-btn", clearHistory);
