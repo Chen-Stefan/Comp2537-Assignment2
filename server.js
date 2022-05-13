@@ -54,7 +54,7 @@ app.put('/timeline/insert', function(req, res) {
   })
 
 app.get('/timeline/delete/:id', function(req, res) {
-    timelineModel.remove({
+    timelineModel.deleteOne({
         '_id': req.params.id
     }, function(err, timelineData){
         if (err){
@@ -66,6 +66,17 @@ app.get('/timeline/delete/:id', function(req, res) {
     });
   })
 
+app.get('/timeline/deleteAllEvents', function(req, res) {
+    timelineModel.deleteMany({}, function(err, timelineData){
+        if (err){
+          console.log("Error " + err);
+        }else{
+          console.log("Data " + timelineData);
+        }
+        res.send('All timeline events has been deleted from the database');
+    });
+  })
+  
 app.get('/timeline/incrementHits/:id', function(req, res) {
     timelineModel.updateOne({
         '_id': req.params.id
