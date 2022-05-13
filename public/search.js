@@ -2,6 +2,10 @@ let currentType = null;
 let currentRegion = null;
 let pokemonName = null;
 let nameInput = null;
+let typeidObject = {};
+let regionidObject = {};
+let now = new Date(Date.now());
+let formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 
 function createSingleTypePokemon(data_t) {
     let pokemonID = data_t.id;
@@ -115,42 +119,77 @@ function clearHistory() {
 }
 
 function addNewTypeTimelineEvent(pokemonType) {
-    $.ajax({
-        type: "PUT",
-        url: "http://localhost:5000/timeline/insert",
-        data: {
-            text: `User searched for pokemon type: ${pokemonType}`,
-            hits: 1,
-            time: "at time Y"
-        },
-        success: (res) => {console.log(res)}
-    })
+    // if (!(pokemonType in typeidObject)) {
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:5000/timeline/insert",
+            data: {
+                text: `User searched for pokemon type: ${pokemonType}`,
+                hits: 1,
+                time: `${now}`
+            },
+            success: (res) => { console.log("We have a new type search")
+                // typeidObject[`${pokemonType}`] = res._id;
+            }
+        })
+    // }else{
+    //     let id = typeidObject[`${pokemonType}`];
+    //     $.ajax({
+    //         type: "GET",
+    //         url: `http://localhost:5000/timeline/incrementHits/${id}`,
+    //         success: (res) => {console.log(res)}
+    //     })
+    // }
 }
 
 function addNewRegionTimelineEvent(currentRegion) {
-    $.ajax({
-        type: "PUT",
-        url: "http://localhost:5000/timeline/insert",
-        data: {
-            text: `User searched for pokemon region: ${currentRegion}`,
-            hits: 1,
-            time: "at time Y"
-        },
-        success: (res) => {console.log(res)}
-    })
+    // if (!(currentRegion in regionidObject)) {
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:5000/timeline/insert",
+            data: {
+                text: `User searched for pokemon region: ${currentRegion}`,
+                hits: 1,
+                time: `${now}`
+            },
+            success: (res) => {
+                console.log("We have a new region search")
+                // regionidObject[`${currentRegion}`] = res._id;
+            }
+        })
+    // }else{
+    //     let id = regionidObject[`${currentRegion}`];
+    //     $.ajax({
+    //         type: "GET",
+    //         url: `http://localhost:5000/timeline/incrementHits/${id}`,
+    //         success: (res) => {console.log(res)}
+    //     })
+    // }
 }
 
 function addNewNameTimelineEvent(nameInput) {
-    $.ajax({
-        type: "PUT",
-        url: "http://localhost:5000/timeline/insert",
-        data: {
-            text: `User searched for pokemon name: ${nameInput}`,
-            hits: 1,
-            time: "at time Y"
-        },
-        success: (res) => {console.log(res)}
-    })
+    // if (!(nameInput in nameidObject)) {
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:5000/timeline/insert",
+            data: {
+                text: `User searched for pokemon name: ${nameInput}`,
+                hits: 1,
+                time: `${now}`
+            },
+            success: (res) => {
+                console.log("We have a new name search")
+                // nameidObject[`${nameInput}`] = res._id;
+            }
+        })
+    // }else {
+    //     let id = nameidObject[`${nameInput}`];
+    //     $.ajax({
+    //         type: "GET",
+    //         url: `http://localhost:5000/timeline/incrementHits/${id}`,
+    //         success: (res) => {console.log(res)}
+    //     })
+    // }
 }
 
 function setup() {
