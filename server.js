@@ -16,15 +16,40 @@ app.use(bodyparser.urlencoded({
   app.listen(process.env.PORT || 5000, function (err) {     // anonymous function as the second parameter
       if(err) console.log(err);
   })
+
   
-mongoose.connect("mongodb://localhost:27017/timelineDB",
- {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(  // username   password             database name
+  "mongodb+srv://stefan79:chenzehan789@cluster0.s5zqy.mongodb.net/pokemonDB?retryWrites=true&w=majority", 
+  { useNewUrlParser: true, useUnifiedTopology: true });
+  
+const pokemonSchema = new mongoose.Schema({
+  name: String,
+  id: Number,
+  type: [String],
+  hp: Number,
+  attack: Number,        
+  defense: Number,        
+  spAttack: Number,        
+  spDefense: Number,        
+  speed: Number  
+});
+
 const timelineSchema = new mongoose.Schema({
-    text: String,
-    hits: Number,
-    time: String
-});                                 // 这里需要match collection的2名字
+  text: String,
+  hits: Number,
+  time: String
+});  
+
+const pokemonModel = mongoose.model("pokemons", pokemonSchema);
 const timelineModel = mongoose.model("timelines", timelineSchema);
+
+// mongoose.connect("mongodb://localhost:27017/timelineDB",
+//  {useNewUrlParser: true, useUnifiedTopology: true});
+// const timelineSchema = new mongoose.Schema({
+//     text: String,
+//     hits: Number,
+//     time: String
+// });                   
 
 app.get('/timeline/getAllEvents', function(req, res) {
     timelineModel.find({}, function(err, timelineData){
@@ -91,66 +116,80 @@ app.get('/timeline/incrementHits/:id', function(req, res) {
         res.send(`Increment hit of ID ${req.params.id} by 1!`);
     });
   })
-
-app.get('/profile/:id', function (req, res) {   
-    const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`;
-    let data = "";
-    https.get(url, function(https_res) {
-        https_res.on("data", function(chunk) {  
-            data += chunk;
-        })
-        https_res.on("end", function() {
-            data = JSON.parse(data);
-
-            let hpArray = data.stats.filter((obj) => {
-                return obj.stat.name == "hp"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            let attackArray = data.stats.filter((obj) => {
-                return obj.stat.name == "attack"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            let defenseArray = data.stats.filter((obj) => {
-                return obj.stat.name == "defense"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            let specialAttackArray = data.stats.filter((obj) => {
-                return obj.stat.name == "special-attack"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            let specialDefenseArray = data.stats.filter((obj) => {
-                return obj.stat.name == "special-defense"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            let speedArray = data.stats.filter((obj) => {
-                return obj.stat.name == "speed"
-            }).map((obj_) => {
-                return obj_.base_stat     // 这个返回的是一个array
-            })
-
-            res.render("profile.ejs", {  
-                "id": req.params.id,
-                "name": data.name,
-                "hp": hpArray[0],
-                "attack": attackArray[0],        
-                "defense": defenseArray[0],        
-                "spAttack": specialAttackArray[0],        
-                "spDefense": specialDefenseArray[0],        
-                "speed": speedArray[0]       
-            })
-        })
-    })              
+// render my pokemon collection on mongoDB Atlas to the ejs profile page
+app.get('/profile/:id', function (req, res) {     
+  pokemonModel.find(
+    {
+      id: req.params.id 
+    },
+    function (err, pokemons) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Data" + pokemons);
+      }
+      res.render("profile.ejs", {  
+        "id": pokemons.id,
+        "name": pokemons.name,
+        "hp": pokemons.hp,
+        "attack": pokemons.attack,        
+        "defense": pokemons.defense,        
+        "spAttack": pokemons.spAttack,        
+        "spDefense": pokemons.spDefense,        
+        "speed": pokemons.speed     
+      }) 
+    }
+  )
 })
+
+    // const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`;
+    // let data = "";
+    // https.get(url, function(https_res) {
+    //     https_res.on("data", function(chunk) {  
+    //         data += chunk;
+    //     })
+    //     https_res.on("end", function() {
+    //         data = JSON.parse(data);
+
+            
+
+            // let hpArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "hp"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+            // let attackArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "attack"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+            // let defenseArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "defense"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+            // let specialAttackArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "special-attack"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+            // let specialDefenseArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "special-defense"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+            // let speedArray = data.stats.filter((obj) => {
+            //     return obj.stat.name == "speed"
+            // }).map((obj_) => {
+            //     return obj_.base_stat     // 这个返回的是一个array
+            // })
+
+           
 
 // res.send()一般用一次， res.write()会把string concatenate, 可以连用好多个
 
