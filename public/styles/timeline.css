@@ -127,3 +127,10 @@ footer {
     overflow: hidden;
 
 }
+
+@media only screen and (max-width: 576px) {
+	ul li{
+		float: left;
+		width: 100%;
+	}
+  }

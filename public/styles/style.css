@@ -5,7 +5,7 @@ html, body{
 
 
 body{
-    margin: 0px;
+    margin: 0px 10px;
     padding: 0px;
     background: #FFFFFF;
     font-family: Arial, Helvetica, sans-serif;
@@ -134,3 +134,10 @@ footer {
     overflow: hidden;
 
 }
+
+@media only screen and (max-width: 576px) {
+	ul li{
+		float: left;
+		width: 100%;
+	}
+  }

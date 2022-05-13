@@ -5,11 +5,11 @@ function loadAllTimelines() {
     url: "http://localhost:5000/timeline/getAllEvents",
     success: (res) => {
       for (i = 0; i < res.length; i++) {
-        let singleEvent = ` <p> Event Description - ${res[i].text} </p>
+        let singleEvent = ` <div><p> Event Description - ${res[i].text} </p>
                 <p> Event Time - ${res[i].time} </p>
                 <p> Event Hits - ${res[i].hits} </p> 
                 <input class="hide" type="button" value="Remove">
-                <hr>`;
+                <hr><div>`;
         if (res[i].text.includes("type")) {
           $("#filter-type").append(`${singleEvent}`);
         } else if (res[i].text.includes("region")) {
