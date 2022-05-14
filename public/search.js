@@ -7,96 +7,68 @@ let typehitObject = {};
 let regionHit = 1;
 let nameHit = 1;
 let regionidObject = {};
+let nameidObject = {};
 let now = new Date(Date.now());
 let formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 
+// filter by type
 function createSingleTypePokemon(data_t) {
-    let pokemonID = data_t.id;
-    let singlePokemonCard = 
-    ` ${pokemonName}<div class="picture"> 
-<a href="http://localhost:5000/profile/${pokemonID}">
-<img src="${data_t.sprites.other["official-artwork"].front_default}">
-</a> </div>`; 
-    $("#left-col").append(singlePokemonCard);
-}
-
-
-async function processPokemonByType(data) {
-    let pokemonArray = data.pokemon;
-    for(i = 0; i < pokemonArray.length; i++) {
-        pokemonName = pokemonArray[i].pokemon.name;
-        await $.ajax({
-            type:"GET",
-            url: `https://pokeapi.co/api/v2/pokemon/${pokemonName}`,
-            success: createSingleTypePokemon
-        })
-    }  
+    for(i = 0; i < data_t.length; i++) {
+        let pokemonID = data_t[i].id;
+        let pokemonName = data_t[i].name;
+        let singlePokemonCard = 
+        ` ${pokemonName}<div class="picture"> 
+    <a href="http://localhost:5000/profile/${pokemonID}">
+    <img src="${data_t[i].image}">
+    </a> </div>`; 
+        $("#left-col").append(singlePokemonCard);
+    }
 }
 
 function displaySpecificType(pokemonType) {
     $("#left-col").empty();
-    let allTypes = ["normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel", "fire", "water", "grass", "electric", "psychic",  "ice", "dragon", "dark", "fairy"];
     currentType = pokemonType;
-    typeID = allTypes.indexOf(currentType) + 1
     $.ajax({
         type: "GET",
-        url: `https://pokeapi.co/api/v2/type/${typeID}`,
-        success: processPokemonByType
+        url: `http://localhost:5000/pokemons/${currentType}`,
+        success: createSingleTypePokemon
     })
 }
 
+// filter by region
 function createSingleRegionPokemon(data_r) {
-    let pokemonID = data_r.id;
-    let singleRegionPokemonName = data_r.name;
-    let singlePokemonCard = 
-    ` ${singleRegionPokemonName}<div class="picture"> 
-<a href="http://localhost:5000/profile/${pokemonID}">
-<img src="${data_r.sprites.other["official-artwork"].front_default}">
-</a> </div>`; 
-    $("#left-col").append(singlePokemonCard);
+    for(i = 0; i < data_r.length; i++) {
+        let pokemonID = data_r[i].id;
+        let singleRegionPokemonName = data_r[i].name;
+        let singlePokemonCard = 
+        ` ${singleRegionPokemonName}<div class="picture"> 
+    <a href="http://localhost:5000/profile/${pokemonID}">
+    <img src="${data_r[i].image}">
+    </a> </div>`; 
+        $("#left-col").append(singlePokemonCard);
+    }
 }
 
 function displaySpecificRegion(pokemonRegion) {
     $("#left-col").empty();
-    let regionalID = {
-        "kanto": [1, 151],
-        "johto": [152, 251],
-        "hoenn": [252, 386],
-        "sinnoh": [387, 494],
-        "unova": [495, 649],
-        "kalos": [650, 721],
-        "alola": [722, 809],
-        "galar": [810, 898]
-    }
     currentRegion = pokemonRegion;
-    let startID = regionalID[currentRegion][0];
-    let endID = regionalID[currentRegion][1];
-    for (i = startID; i <= endID; i++) {
         $.ajax({
             type: "GET",
-            url: `https://pokeapi.co/api/v2/pokemon/${i}`,
+            url: `http://localhost:5000/filter/${currentRegion}`,
             success: createSingleRegionPokemon
         })
-    }
-   
 }
 
-function displaySearchResultAndHistory(data_n) {
+// search by name
+function displaySearchResult(data_n) {
     $("#left-col").empty();
-    let pokemonID = data_n.id;
+    let pokemonID = data_n[0].id;
     let singlePokemonCard = 
     ` ${nameInput}<div class="picture"> 
     <a href="http://localhost:5000/profile/${pokemonID}">
-    <img src="${data_n.sprites.other["official-artwork"].front_default}">
+    <img src="${data_n[0].image}">
     </a> </div>`; 
     $("#left-col").append(singlePokemonCard);
-    $("#search-items").append(
-        "<span class='search-item'>" +
-          `<a href= "http://localhost:5000/profile/${pokemonID}">${nameInput}</a>` +
-          '<input class="hide" type="button" value="Remove">' +
-          "</span>" +
-          "<br>"
-      );
 }
 
 async function searchPokemonByName() {
@@ -106,21 +78,12 @@ async function searchPokemonByName() {
     }
     await $.ajax({
         type: "GET",
-        url: `https://pokeapi.co/api/v2/pokemon/${nameInput}`,
-        success: displaySearchResultAndHistory
+        url: `http://localhost:5000/search/${nameInput}`,
+        success: displaySearchResult
     });
-
     addNewNameTimelineEvent(nameInput);
 }
-
-function hide_() {
-    $(this).parent().remove();
-}
-
-function clearHistory() {
-    $("#search-items").empty();
-}
-
+// add type filter timeline
 function addNewTypeTimelineEvent(pokemonType) {
     if (!(typeArray.includes(pokemonType))) {
         typeArray.push(pokemonType);
@@ -159,7 +122,7 @@ function addNewTypeTimelineEvent(pokemonType) {
         })
     }
 }
-
+// add region filter timeline
 function addNewRegionTimelineEvent(currentRegion) {
     if (!(currentRegion in regionidObject)) {
         $.ajax({
@@ -184,7 +147,7 @@ function addNewRegionTimelineEvent(currentRegion) {
         })
     }
 }
-
+// add name search timeline
 function addNewNameTimelineEvent(nameInput) {
     if (!(nameInput in nameidObject)) {
         $.ajax({
@@ -197,7 +160,7 @@ function addNewNameTimelineEvent(nameInput) {
             },
             success: (res) => {
                 console.log("We have a new name search")
-                // nameidObject[`${nameInput}`] = res._id;
+                nameidObject[`${nameInput}`] = res._id;
             }
         })
     }else {
@@ -228,11 +191,6 @@ function setup() {
     })
 
     $("#search-btn").click(searchPokemonByName);
-    $("body").on("click", ".hide", hide_);
-    $("body").on("click", "#clear-btn", clearHistory);
 }
-
-
-
 
 $(document).ready(setup);

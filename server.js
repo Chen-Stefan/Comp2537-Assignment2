@@ -130,7 +130,60 @@ app.get('/pokemons', function (req, res) {
       res.json(pokemons);
     })
 })
-
+// filter pokemon by type
+app.get('/pokemons/:type', function (req, res) {
+  pokemonModel.find({
+    'type': req.params.type
+  },
+    function (err, pokemons) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Data" + pokemons);
+      }
+      res.json(pokemons);
+    })
+})
+// filter pokemon by region
+app.get('/filter/:region', function (req, res) {
+  let regionalID = {
+    "kanto": [1, 151],
+    "johto": [152, 251],
+    "hoenn": [252, 386],
+    "sinnoh": [387, 494],
+    "unova": [495, 649],
+    "kalos": [650, 721],
+    "alola": [722, 809],
+    "galar": [810, 898]
+  }
+  let startID = regionalID[`${req.params.region}`][0];
+  let endID = regionalID[`${req.params.region}`][1];
+  pokemonModel.find({
+    'id': { $gte :  startID, $lte : endID}
+  },
+    function (err, pokemons) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Data" + pokemons);
+      }
+      res.json(pokemons);
+    })
+})
+// search pokemon by name
+app.get('/search/:name', function (req, res) {
+  pokemonModel.find({
+    'name': req.params.name
+  },
+    function (err, pokemons) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Data" + pokemons);
+      }
+      res.json(pokemons);
+    })
+})
 // render my pokemon collection on mongoDB Atlas to the ejs profile page
 app.get('/profile/:id', function (req, res) {    
   pokemonModel.find(
