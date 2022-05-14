@@ -161,7 +161,7 @@ function addNewTypeTimelineEvent(pokemonType) {
 }
 
 function addNewRegionTimelineEvent(currentRegion) {
-    // if (!(currentRegion in regionidObject)) {
+    if (!(currentRegion in regionidObject)) {
         $.ajax({
             type: "PUT",
             url: "http://localhost:5000/timeline/insert",
@@ -175,18 +175,18 @@ function addNewRegionTimelineEvent(currentRegion) {
                 // regionidObject[`${currentRegion}`] = res._id;
             }
         })
-    // }else{
-    //     let id = regionidObject[`${currentRegion}`];
-    //     $.ajax({
-    //         type: "GET",
-    //         url: `http://localhost:5000/timeline/incrementHits/${id}`,
-    //         success: (res) => {console.log(res)}
-    //     })
-    // }
+    }else{
+        let id = regionidObject[`${currentRegion}`];
+        $.ajax({
+            type: "GET",
+            url: `http://localhost:5000/timeline/incrementHits/${id}`,
+            success: (res) => {console.log(res)}
+        })
+    }
 }
 
 function addNewNameTimelineEvent(nameInput) {
-    // if (!(nameInput in nameidObject)) {
+    if (!(nameInput in nameidObject)) {
         $.ajax({
             type: "PUT",
             url: "http://localhost:5000/timeline/insert",
@@ -200,14 +200,14 @@ function addNewNameTimelineEvent(nameInput) {
                 // nameidObject[`${nameInput}`] = res._id;
             }
         })
-    // }else {
-    //     let id = nameidObject[`${nameInput}`];
-    //     $.ajax({
-    //         type: "GET",
-    //         url: `http://localhost:5000/timeline/incrementHits/${id}`,
-    //         success: (res) => {console.log(res)}
-    //     })
-    // }
+    }else {
+        let id = nameidObject[`${nameInput}`];
+        $.ajax({
+            type: "GET",
+            url: `http://localhost:5000/timeline/incrementHits/${id}`,
+            success: (res) => {console.log(res)}
+        })
+    }
 }
 
 function setup() {
